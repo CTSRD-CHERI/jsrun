@@ -13651,7 +13651,7 @@ DUK_INTERNAL duk_size_t duk_unicode_unvalidated_utf8_length(const duk_uint8_t *d
 	/* Align 'p' to 4; the input data may have arbitrary alignment.
 	 * End of string check not needed because blen >= 16.
 	 */
-	while (((duk_uintptr_t) (const void *) p) & 0x03) {
+	while (((duk_size_t) (const void *) p) & 0x03) {
 		duk_uint8_t x;
 		x = *p++;
 		if (DUK_UNLIKELY(x >= 0x80 && x <= 0xbf)) {
@@ -33493,7 +33493,7 @@ DUK_LOCAL duk_uint8_t *duk__enc_buffer_data_hex(const duk_uint8_t *src, duk_size
 #if defined(DUK_USE_UNALIGNED_ACCESSES_POSSIBLE)
 	q16 = (duk_uint16_t *) (void *) dst;
 #else
-	shift_dst = (duk_bool_t) (((duk_uintptr_t) dst) & 0x01U);
+	shift_dst = (duk_bool_t) (((duk_size_t) dst) & 0x01U);
 	if (shift_dst) {
 		DUK_DD(DUK_DDPRINT("unaligned accesses not possible, dst not aligned -> step to dst + 1"));
 		q16 = (duk_uint16_t *) (void *) (dst + 1);
