@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include "jsrun.h"
 
+#ifndef __CHERI_PURE_CAPABILITY__
 #ifdef TRACE_WORKERS
 #define LOG(...) fprintf(stderr, __VA_ARGS__)
 #else
@@ -875,3 +876,4 @@ init_workers(duk_context *ctx)
 	duk_put_prop_string(ctx, -2, "Worker");
 	duk_pop(ctx);
 }
+#endif

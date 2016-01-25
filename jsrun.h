@@ -39,5 +39,7 @@ static inline void init_default_objects(duk_context *ctx)
 {
 	init_env(ctx);
 	init_modules(ctx);
+#ifndef __CHERI_PURE_CAPABILITY__
 	init_workers(ctx);
+#endif
 }
