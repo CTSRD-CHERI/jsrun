@@ -2329,13 +2329,7 @@ typedef FILE duk_file;
 /* User forced alignment to 4 or 8. */
 #if defined(DUK_OPT_FORCE_ALIGN)
 #undef DUK_USE_ALIGN_BY
-#if (DUK_OPT_FORCE_ALIGN == 4)
-#define DUK_USE_ALIGN_BY 4
-#elif (DUK_OPT_FORCE_ALIGN == 8)
-#define DUK_USE_ALIGN_BY 8
-#else
-#error invalid DUK_OPT_FORCE_ALIGN value
-#endif
+#define DUK_USE_ALIGN_BY DUK_OPT_FORCE_ALIGN
 #endif
 
 /* Compiler specific hackery needed to force struct size to match aligment,

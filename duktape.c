@@ -8097,14 +8097,10 @@ DUK_INTERNAL_DECL duk_ucodepoint_t duk_hstring_char_code_at_raw(duk_hthread *thr
 	} while (0)
 #elif defined(DUK_USE_HOBJECT_LAYOUT_2)
 /* LAYOUT 2 */
-#if (DUK_USE_ALIGN_BY == 4)
-#define DUK_HOBJECT_E_FLAG_PADDING(e_sz) ((4 - (e_sz)) & 0x03)
-#elif (DUK_USE_ALIGN_BY == 8)
-#define DUK_HOBJECT_E_FLAG_PADDING(e_sz) ((8 - (e_sz)) & 0x07)
-#elif (DUK_USE_ALIGN_BY == 1)
+#if (DUK_USE_ALIGN_BY == 1)
 #define DUK_HOBJECT_E_FLAG_PADDING(e_sz) 0
 #else
-#error invalid DUK_USE_ALIGN_BY
+#define DUK_HOBJECT_E_FLAG_PADDING(e_sz) ((DUK_USE_ALIGN_BY - (e_sz)) & (DUK_USE_ALIGN_BY-1))
 #endif
 #define DUK_HOBJECT_E_GET_KEY_BASE(heap,h) \
 	((duk_hstring **) (void *) ( \
@@ -8385,15 +8381,7 @@ DUK_INTERNAL_DECL duk_ucodepoint_t duk_hstring_char_code_at_raw(duk_hthread *thr
 #define DUK_HOBJECT_A_ABANDON_LIMIT      2  /* 25%, i.e. less than 25% used -> abandon */
 
 /* internal align target for props allocation, must be 2*n for some n */
-#if (DUK_USE_ALIGN_BY == 4)
-#define DUK_HOBJECT_ALIGN_TARGET         4
-#elif (DUK_USE_ALIGN_BY == 8)
-#define DUK_HOBJECT_ALIGN_TARGET         8
-#elif (DUK_USE_ALIGN_BY == 1)
-#define DUK_HOBJECT_ALIGN_TARGET         1
-#else
-#error invalid DUK_USE_ALIGN_BY
-#endif
+#define DUK_HOBJECT_ALIGN_TARGET         DUK_USE_ALIGN_BY
 
 /* controls for minimum entry part growth */
 #define DUK_HOBJECT_E_MIN_GROW_ADD       16
@@ -9644,8 +9632,8 @@ struct duk_hbuffer {
 /* Fixed buffer; data follows struct, with proper alignment guaranteed by
  * struct size.
  */
-#if (DUK_USE_ALIGN_BY == 8) && defined(DUK_USE_PACK_MSVC_PRAGMA)
-#pragma pack(push, 8)
+#if (DUK_USE_ALIGN_BY > 1) && defined(DUK_USE_PACK_MSVC_PRAGMA)
+#pragma pack(push, DUK_USE_ALIGN_BY)
 #endif
 struct duk_hbuffer_fixed {
 	/* A union is used here as a portable struct size / alignment trick:
@@ -9663,14 +9651,8 @@ struct duk_hbuffer_fixed {
 			duk_size_t size;
 #endif
 		} s;
-#if (DUK_USE_ALIGN_BY == 4)
-		duk_uint32_t dummy_for_align4;
-#elif (DUK_USE_ALIGN_BY == 8)
-		duk_double_t dummy_for_align8;
-#elif (DUK_USE_ALIGN_BY == 1)
-		/* no extra padding */
-#else
-#error invalid DUK_USE_ALIGN_BY
+#if (DUK_USE_ALIGN_BY > 1)
+		duk_uint8_t padding[DUK_USE_ALIGN_BY];
 #endif
 	} u;
 
@@ -9687,13 +9669,13 @@ struct duk_hbuffer_fixed {
 	 *  dynamic buffer).
 	 */
 }
-#if (DUK_USE_ALIGN_BY == 8) && defined(DUK_USE_PACK_GCC_ATTR)
-__attribute__ ((aligned (8)))
-#elif (DUK_USE_ALIGN_BY == 8) && defined(DUK_USE_PACK_CLANG_ATTR)
-__attribute__ ((aligned (8)))
+#if (DUK_USE_ALIGN_BY > 1) && defined(DUK_USE_PACK_GCC_ATTR)
+__attribute__ ((aligned (DUK_USE_ALIGN_BY)))
+#elif (DUK_USE_ALIGN_BY > 8) && defined(DUK_USE_PACK_CLANG_ATTR)
+__attribute__ ((aligned (DUK_USE_ALIGN_BY)))
 #endif
 ;
-#if (DUK_USE_ALIGN_BY == 8) && defined(DUK_USE_PACK_MSVC_PRAGMA)
+#if (DUK_USE_ALIGN_BY > 1) && defined(DUK_USE_PACK_MSVC_PRAGMA)
 #pragma pack(pop)
 #endif
 
@@ -56033,15 +56015,10 @@ DUK_INTERNAL void duk_hthread_create_builtin_objects(duk_hthread *thr) {
 #endif
 			" "
 			/* Alignment guarantee */
-#if (DUK_USE_ALIGN_BY == 4)
-			"a4"
-#elif (DUK_USE_ALIGN_BY == 8)
-			"a8"
-#elif (DUK_USE_ALIGN_BY == 1)
-			"a1"
-#else
-#error invalid DUK_USE_ALIGN_BY
-#endif
+#define DUK_XSTRINGIFY(x) #x
+#define DUK_STRINGIFY(x) DUK_XSTRINGIFY(x)
+			"a"
+			DUK_STRINGIFY(DUK_USE_ALIGN_BY)
 			" "
 			/* Architecture, OS, and compiler strings */
 	                DUK_USE_ARCH_STRING
