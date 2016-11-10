@@ -44,6 +44,7 @@ CFLAGS+=-msoft-float
 CFLAGS+=-DDUK_USE_PACKED_TVAL=1
 CFLAGS+=--sysroot=$(MIPS_SDK)/sysroot
 CFLAGS+=-I/usr/include/edit
+CFLAGS+=-integrated-as
 LDFLAGS+=--sysroot=$(MIPS_SDK)/sysroot
 LDFLAGS+=-B $(MIPS_SDK)/bin
 LDFLAGS+=-static
