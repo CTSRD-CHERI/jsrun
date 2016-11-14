@@ -11,7 +11,6 @@ LLVM_CONFIG ?= llvm-config
 #CFLAGS+=-Werror
 CFLAGS+=-DDUK_OPT_NO_ASSERTIONS=1
 CFLAGS+=-DDUK_OPT_UNDERSCORE_SETJMP=1
-CFLAGS+=-DDUK_OPT_FORCE_ALIGN=32
 CFLAGS+=-DDUK_OPT_DEBUG=3
 #CFLAGS+=-DDUK_OPT_DDDPRINT=1 -DDUK_OPT_DDPRINT=1 -DDUK_OPT_DPRINT=1
 
@@ -25,6 +24,9 @@ CFLAGS+=-msoft-float
 CFLAGS+=-mabi=sandbox
 .if $(VERSION) == cheri128
 CFLAGS+=-mllvm -cheri128
+CFLAGS+=-DDUK_OPT_FORCE_ALIGN=16
+.else
+CFLAGS+=-DDUK_OPT_FORCE_ALIGN=32
 .endif
 #CFLAGS+=-mllvm -cheri-no-global-bounds
 CFLAGS+=-DDUK_USE_PACKED_TVAL=1
@@ -39,7 +41,8 @@ LDFLAGS+=-lpthread
 LDFLAGS+=-B $(CHERI_SDK)/bin
 LDFLAGS+=-Wl,--whole-archive -lstatcounters -Wl,--no-whole-archive
 .elif $(VERSION) == mips
-CC=$(MIPS_SDK)/bin/mips64-unknown-freebsd-clang
+#CC=$(MIPS_SDK)/bin/mips64-unknown-freebsd-clang
+CC=$(MIPS_SDK)/bin/cheri-unknown-freebsd-clang
 CFLAGS+=-msoft-float
 CFLAGS+=-DDUK_USE_PACKED_TVAL=1
 CFLAGS+=--sysroot=$(MIPS_SDK)/sysroot
