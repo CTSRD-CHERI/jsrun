@@ -43,6 +43,7 @@ LDFLAGS+=-Wl,--whole-archive -lstatcounters -Wl,--no-whole-archive
 .elif $(VERSION) == mips
 #CC=$(MIPS_SDK)/bin/mips64-unknown-freebsd-clang
 CC=$(MIPS_SDK)/bin/cheri-unknown-freebsd-clang
+CFLAGS+=-DDUK_OPT_FORCE_ALIGN=8
 CFLAGS+=-msoft-float
 CFLAGS+=-DDUK_USE_PACKED_TVAL=1
 CFLAGS+=--sysroot=$(MIPS_SDK)/sysroot
