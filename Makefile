@@ -22,6 +22,7 @@ VERSION?=x86
 CC=$(CHERI_SDK)/bin/cheri-unknown-freebsd-clang
 CFLAGS+=-msoft-float
 CFLAGS+=-mabi=sandbox
+CFLAGS+=-mllvm -cheri-no-global-bounds
 .if $(VERSION) == cheri128
 CFLAGS+=-mllvm -cheri128
 CFLAGS+=-DDUK_OPT_FORCE_ALIGN=16
@@ -32,7 +33,7 @@ CFLAGS+=-DDUK_OPT_FORCE_ALIGN=32
 CFLAGS+=-DDUK_USE_PACKED_TVAL=1
 CFLAGS+=--sysroot=$(CHERI_SDK)/sysroot
 CFLAGS+=-I/usr/include/edit
-CFLAGS+=-g
+#CFLAGS+=-v
 LDFLAGS+=-mabi=sandbox
 LDFLAGS+=--sysroot=$(CHERI_SDK)/sysroot
 LDFLAGS+=-static
