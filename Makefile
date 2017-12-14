@@ -6,12 +6,11 @@ all: jsrun
 LLVM_CONFIG ?= llvm-config
 #CFLAGS+=-O1
 #CFLAGS+=-O3 -DNDEBUG
-#CFLAGS+=-O2
+CFLAGS+=-O2
 #CXXFLAGS+=-O0 -g
 #CFLAGS+=-Werror
 CFLAGS+=-DDUK_OPT_NO_ASSERTIONS=1
 CFLAGS+=-DDUK_OPT_UNDERSCORE_SETJMP=1
-CFLAGS+=-DDUK_OPT_FORCE_ALIGN=32
 CFLAGS+=-DDUK_OPT_DEBUG=3
 #CFLAGS+=-DDUK_OPT_DDDPRINT=1 -DDUK_OPT_DDPRINT=1 -DDUK_OPT_DPRINT=1
 
@@ -23,16 +22,19 @@ VERSION?=x86
 CC=$(CHERI_SDK)/bin/cheri-unknown-freebsd-clang
 CFLAGS+=-msoft-float
 CFLAGS+=-mabi=purecap
+CFLAGS+=-mllvm -cheri-no-global-bounds
 .if $(VERSION) == cheri128
 CFLAGS+=-cheri=128
+CFLAGS+=-DDUK_OPT_FORCE_ALIGN=16
 .else
 CFLAGS+=-cheri=256
+CFLAGS+=-DDUK_OPT_FORCE_ALIGN=32
 .endif
 #CFLAGS+=-mllvm -cheri-no-global-bounds
 CFLAGS+=-DDUK_USE_PACKED_TVAL=1
 CFLAGS+=--sysroot=$(CHERI_SDK)/sysroot
 CFLAGS+=-I/usr/include/edit
-CFLAGS+=-g
+#CFLAGS+=-v
 LDFLAGS+=-mabi=sandbox
 LDFLAGS+=--sysroot=$(CHERI_SDK)/sysroot
 LDFLAGS+=-static
@@ -41,7 +43,9 @@ LDFLAGS+=-lpthread
 LDFLAGS+=-B $(CHERI_SDK)/bin
 LDFLAGS+=-Wl,--whole-archive -lstatcounters -Wl,--no-whole-archive
 .elif $(VERSION) == mips
-CC=$(MIPS_SDK)/bin/mips64-unknown-freebsd-clang
+#CC=$(MIPS_SDK)/bin/mips64-unknown-freebsd-clang
+CC=$(MIPS_SDK)/bin/cheri-unknown-freebsd-clang
+CFLAGS+=-DDUK_OPT_FORCE_ALIGN=8
 CFLAGS+=-msoft-float
 CFLAGS+=-DDUK_USE_PACKED_TVAL=1
 CFLAGS+=--sysroot=$(MIPS_SDK)/sysroot
