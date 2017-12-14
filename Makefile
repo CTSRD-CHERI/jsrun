@@ -22,7 +22,7 @@ VERSION?=x86
 .if $(VERSION) == cheri128 || $(VERSION) == cheri256
 CC=$(CHERI_SDK)/bin/cheri-unknown-freebsd-clang
 CFLAGS+=-msoft-float
-CFLAGS+=-mabi=sandbox
+CFLAGS+=-mabi=purecap
 .if $(VERSION) == cheri128
 CFLAGS+=-cheri=128
 .else
