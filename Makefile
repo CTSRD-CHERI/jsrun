@@ -21,12 +21,13 @@ VERSION?=x86
 .if $(VERSION) == cheri128 || $(VERSION) == cheri256
 CC=$(CHERI_SDK)/bin/cheri-unknown-freebsd-clang
 CFLAGS+=-msoft-float
-CFLAGS+=-mabi=sandbox
+CFLAGS+=-mabi=purecap
 CFLAGS+=-mllvm -cheri-no-global-bounds
 .if $(VERSION) == cheri128
-CFLAGS+=-mllvm -cheri128
+CFLAGS+=-cheri=128
 CFLAGS+=-DDUK_OPT_FORCE_ALIGN=16
 .else
+CFLAGS+=-cheri=256
 CFLAGS+=-DDUK_OPT_FORCE_ALIGN=32
 .endif
 #CFLAGS+=-mllvm -cheri-no-global-bounds
