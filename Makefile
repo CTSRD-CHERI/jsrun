@@ -24,7 +24,9 @@ CC=$(CHERI_SDK)/bin/cheri-unknown-freebsd-clang
 CFLAGS+=-msoft-float
 CFLAGS+=-mabi=sandbox
 .if $(VERSION) == cheri128
-CFLAGS+=-mllvm -cheri128
+CFLAGS+=-cheri=128
+.else
+CFLAGS+=-cheri=256
 .endif
 #CFLAGS+=-mllvm -cheri-no-global-bounds
 CFLAGS+=-DDUK_USE_PACKED_TVAL=1
