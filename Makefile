@@ -21,6 +21,7 @@ VERSION?=x86
 .if $(VERSION) == cheri128 || $(VERSION) == cheri256
 CC=$(CHERI_SDK)/bin/cheri-unknown-freebsd-clang
 CFLAGS+=-msoft-float
+CFLAGS+=-mcpu=mips4
 CFLAGS+=-mabi=purecap
 CFLAGS+=-mllvm -cheri-no-global-bounds
 .if $(VERSION) == cheri128
@@ -46,6 +47,7 @@ LDFLAGS+=-Wl,--whole-archive -lstatcounters -Wl,--no-whole-archive
 CC=$(MIPS_SDK)/bin/mips64-unknown-freebsd-clang
 CFLAGS+=-DDUK_OPT_FORCE_ALIGN=8
 CFLAGS+=-msoft-float
+CFLAGS+=-mcpu=mips4
 CFLAGS+=-DDUK_USE_PACKED_TVAL=1
 CFLAGS+=--sysroot=$(MIPS_SDK)/sysroot
 CFLAGS+=-I/usr/include/edit
