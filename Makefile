@@ -70,7 +70,7 @@ jsrun: $(OBJECTS)
 	${CC} -o jsrun $(OBJECTS) $(LDFLAGS) -lm  -ltermcap
 
 jsrun.dump: jsrun
-	$(CHERI_SDK)/bin/llvm-objdump -disassemble -d -S -s -r -triple=cheri-unknown-freebsd jsrun > jsrun.dump
+	$(CHERI_SDK)/bin/llvm-objdump -disassemble -S -s -r -triple=cheri-unknown-freebsd jsrun > jsrun.dump
 
 jsrun.gdump: jsrun
 	$(CHERI_SDK)/bin/objdump -dr jsrun > jsrun.gdump
