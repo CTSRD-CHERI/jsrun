@@ -6425,8 +6425,8 @@ DUK_INTERNAL_DECL duk_double_t duk_tval_get_number_packed(duk_tval *tv);
 typedef struct duk_tval_struct duk_tval;
 
 struct duk_tval_struct {
-	duk_small_uint_t t;
-	duk_small_uint_t v_extra;
+	duk_uint64_t t;
+	duk_uint64_t v_extra;
 	union {
 		duk_double_t d;
 		duk_small_int_t i;
